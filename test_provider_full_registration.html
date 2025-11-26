@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlinkCare - Service Provider Full Registration Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.1);
+        }
+
+        .step h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background-color: #f3f4f6;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            box-shadow: 0 10px 20px rgba(107, 114, 128, 0.3);
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .response.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .response.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .response.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .file-upload {
+            border: 2px dashed #e5e7eb;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: #667eea;
+            background: #f8fafc;
+        }
+
+        .file-upload.dragover {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .test-data {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .test-data h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .test-data p {
+            color: #78350f;
+            margin: 5px 0;
+        }
+
+        .demo-email {
+            background: #e0f2fe;
+            border: 2px solid #0284c7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .demo-email h3 {
+            color: #0c4a6e;
+            margin-bottom: 10px;
+        }
+
+        .demo-email p {
+            color: #164e63;
+            margin: 5px 0;
+        }
+
+        .demo-email code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 BlinkCare Provider Registration Test</h1>
+            <p>Complete Service Provider Registration Flow Testing</p>
+            <div style="margin-top: 15px;">
+                <button class="btn btn-secondary" onclick="displayErrorReport()" style="margin-right: 10px;">📊 View Error Report</button>
+                <button class="btn btn-secondary" onclick="downloadErrorReport()">📥 Download Report</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Progress Bar -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+            </div>
+
+            <!-- Demo Email Information -->
+            <div class="demo-email">
+                <h3>📧 Test Email Information</h3>
+                <p><strong>Use a real Gmail address for testing:</strong></p>
+                <p>• Make sure to use a valid Gmail account you have access to</p>
+                <p>• Check your inbox (and spam folder) for the OTP</p>
+                <p>• OTP will be valid for 10 minutes</p>
+                <p>• Demo OTP for testing: <code>123456</code> (fallback)</p>
+            </div>
+
+            <!-- Step 1: Send OTP -->
+            <div class="step active" id="step1">
+                <h2><span class="step-number">1</span>Send OTP to Email</h2>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="Enter your Gmail address" required>
+                </div>
+
+                <button class="btn" onclick="sendOTP()">
+                    <span id="sendOTPLoader"></span>
+                    Send OTP
+                </button>
+
+                <div id="otpResponse" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Step 2: Verify OTP -->
+            <div class="step" id="step2">
+                <h2><span class="step-number">2</span>Verify OTP</h2>
+                
+                <div class="form-group">
+                    <label for="otp">Enter OTP</label>
+                    <input type="text" id="otp" placeholder="Enter 6-digit OTP" maxlength="6">
+                </div>
+
+                <button class="btn" onclick="verifyOTP()">
+                    <span id="verifyOTPLoader"></span>
+                    Verify OTP
+                </button>
+
+                <div id="verifyResponse" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Step 3: Complete Registration -->
+            <div class="step" id="step3">
+                <h2><span class="step-number">3</span>Complete Registration</h2>
+                
+                <div class="test-data">
+                    <h3>📝 Pre-filled Test Data</h3>
+                    <p>All fields below are pre-filled with test data. You can modify them as needed.</p>
+                </div>
+
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" value="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="business_name">Business Name</label>
+                        <input type="text" id="business_name" name="business_name" value="John's Home Services" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number</label>
+                        <input type="tel" id="phone_number" name="phone_number" value="9876543210" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service_type">Service Categories</label>
+                        <div class="checkbox-group" id="serviceTypesContainer">
+                            <!-- Service types will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pincode">Service Area Pincode</label>
+                        <input type="text" id="pincode" name="pincode" value="560001" maxlength="6" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Complete Address</label>
+                        <textarea id="address" name="address" required>123 Main Street, Bangalore, Karnataka, India</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="document">Document Upload (ID Proof/Business License)</label>
+                        <div class="file-upload" onclick="document.getElementById('document').click()">
+                            <input type="file" id="document" name="document" accept=".pdf,.doc,.docx,.png,.jpg,.jpeg" style="display: none;" onchange="handleFileUpload(this)">
+                            <div id="fileUploadText">
+                                <div style="font-size: 2rem; margin-bottom: 10px;">📄</div>
+                                <p><strong>Click to upload or drag and drop</strong></p>
+                                <p style="color: #6b7280; margin-top: 5px;">PDF, DOC, DOCX, PNG, JPG (Max 5MB)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="referral">Referral Code (Optional)</label>
+                        <input type="text" id="referral" name="referral" placeholder="Enter referral code if you have one">
+                    </div>
+
+                    <button type="button" class="btn" onclick="completeRegistration()">
+                        <span id="registerLoader"></span>
+                        Complete Registration
+                    </button>
+                </form>
+
+                <div id="registerResponse" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Step 4: Results -->
+            <div class="step" id="step4" style="display: none;">
+                <h2><span class="step-number">✓</span>Registration Complete!</h2>
+                <div class="response success">
+                    <p><strong>🎉 Congratulations!</strong></p>
+                    <p>Your service provider registration has been completed successfully!</p>
+                    <p>Please wait for admin approval to start receiving service requests.</p>
+                </div>
+
+                <button class="btn btn-secondary" onclick="resetTest()">Reset Test</button>
+            </div>
+
+            <!-- Error Report Section -->
+            <div class="step" id="errorReportSection" style="display: none;">
+                <h2><span class="step-number">📊</span>Error Report & Diagnostics</h2>
+                
+                <div class="test-data">
+                    <h3>🔍 Known Issues & Solutions</h3>
+                    <div style="text-align: left;">
+                        <p><strong>1. CORS Issues:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>Error: "Load failed" or "CORS policy" errors</li>
+                            <li>Solution: Ensure backend server is running with CORS enabled</li>
+                            <li>Check: Backend should be accessible at http://localhost:5001</li>
+                        </ul>
+                        
+                        <p><strong>2. Network Connectivity:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>Error: "Failed to fetch" or connection refused</li>
+                            <li>Solution: Start backend server with: <code>python3 app.py</code></li>
+                            <li>Check: Verify port 5001 is not blocked by firewall</li>
+                        </ul>
+                        
+                        <p><strong>3. Database Connection:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>Error: "Database connection failed"</li>
+                            <li>Solution: Ensure MySQL database is running and configured</li>
+                            <li>Check: Database credentials in app.py configuration</li>
+                        </ul>
+                        
+                        <p><strong>4. File Upload Issues:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>Error: "Document upload failed"</li>
+                            <li>Solution: Check file size (max 5MB) and format (PDF, DOC, PNG, JPG)</li>
+                            <li>Check: Ensure uploads directory has write permissions</li>
+                        </ul>
+                        
+                        <p><strong>5. Email/OTP Issues:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 15px;">
+                            <li>Error: "OTP not received" or "Email sending failed"</li>
+                            <li>Solution: Check email configuration in backend</li>
+                            <li>Fallback: Use test OTP "123456" for development</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="demo-email">
+                    <h3>🛠️ Troubleshooting Steps</h3>
+                    <div style="text-align: left;">
+                        <p><strong>Step 1: Check Backend Status</strong></p>
+                        <p>• Open terminal and run: <code>curl http://localhost:5001/user/categories</code></p>
+                        <p>• Should return JSON with categories list</p>
+                        
+                        <p><strong>Step 2: Check Frontend Status</strong></p>
+                        <p>• Open browser and go to: <code>http://localhost:5173</code></p>
+                        <p>• Should load the React application</p>
+                        
+                        <p><strong>Step 3: Check Database</strong></p>
+                        <p>• Ensure MySQL is running</p>
+                        <p>• Check database connection in backend logs</p>
+                        
+                        <p><strong>Step 4: Check File Permissions</strong></p>
+                        <p>• Ensure uploads directory exists and is writable</p>
+                        <p>• Check backend logs for file upload errors</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>System Information</label>
+                    <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 12px;">
+                        <div id="systemInfo">Loading system information...</div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="runDiagnostics()">🔧 Run Full Diagnostics</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('errorReportSection').style.display='none'">Close Report</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let providerEmail = '';
+        let serviceTypes = [];
+        
+        // Error tracking and reporting
+        const errorReport = {
+            timestamp: new Date().toISOString(),
+            errors: [],
+            warnings: [],
+            steps: {
+                step1: { status: 'pending', errors: [], timestamp: null },
+                step2: { status: 'pending', errors: [], timestamp: null },
+                step3: { status: 'pending', errors: [], timestamp: null }
+            },
+            networkIssues: [],
+            validationErrors: [],
+            backendStatus: 'unknown'
+        };
+
+        // Error reporting functions
+        function logError(step, error, details = {}) {
+            const errorEntry = {
+                step: step,
+                error: error,
+                details: details,
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            };
+            
+            errorReport.errors.push(errorEntry);
+            errorReport.steps[step].errors.push(errorEntry);
+            
+            console.error(`[${step}] ${error}`, details);
+        }
+
+        function logWarning(step, warning, details = {}) {
+            const warningEntry = {
+                step: step,
+                warning: warning,
+                details: details,
+                timestamp: new Date().toISOString()
+            };
+            
+            errorReport.warnings.push(warningEntry);
+            console.warn(`[${step}] ${warning}`, details);
+        }
+
+        function logNetworkIssue(url, error, response = null) {
+            const networkIssue = {
+                url: url,
+                error: error,
+                response: response,
+                timestamp: new Date().toISOString()
+            };
+            
+            errorReport.networkIssues.push(networkIssue);
+            console.error(`[NETWORK] ${url}: ${error}`, response);
+        }
+
+        function logValidationError(field, error, value = null) {
+            const validationError = {
+                field: field,
+                error: error,
+                value: value,
+                timestamp: new Date().toISOString()
+            };
+            
+            errorReport.validationErrors.push(validationError);
+            console.error(`[VALIDATION] ${field}: ${error}`, value);
+        }
+
+        function logInfo(message, details = {}) {
+            console.info(`[INFO] ${message}`, details);
+        }
+
+        function updateStepStatus(step, status, error = null) {
+            errorReport.steps[step].status = status;
+            errorReport.steps[step].timestamp = new Date().toISOString();
+            
+            if (error) {
+                logError(step, error);
+            }
+        }
+
+        function generateErrorReport() {
+            const report = {
+                ...errorReport,
+                summary: {
+                    totalErrors: errorReport.errors.length,
+                    totalWarnings: errorReport.warnings.length,
+                    networkIssues: errorReport.networkIssues.length,
+                    validationErrors: errorReport.validationErrors.length,
+                    completedSteps: Object.values(errorReport.steps).filter(s => s.status === 'completed').length,
+                    failedSteps: Object.values(errorReport.steps).filter(s => s.status === 'failed').length
+                }
+            };
+            
+            return report;
+        }
+
+        function displayErrorReport() {
+            // Show the full error report section
+            document.getElementById('errorReportSection').style.display = 'block';
+            document.getElementById('errorReportSection').scrollIntoView({ behavior: 'smooth' });
+            
+            // Update system information
+            updateSystemInfo();
+        }
+
+        function updateSystemInfo() {
+            const systemInfo = document.getElementById('systemInfo');
+            const info = {
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                cookieEnabled: navigator.cookieEnabled,
+                onLine: navigator.onLine,
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                referrer: document.referrer,
+                screen: {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth
+                },
+                viewport: {
+                    width: window.innerWidth,
+                    height: window.innerHeight
+                }
+            };
+            
+            systemInfo.innerHTML = JSON.stringify(info, null, 2);
+        }
+
+        async function runDiagnostics() {
+            const diagnostics = {
+                timestamp: new Date().toISOString(),
+                tests: {}
+            };
+            
+            // Test 1: Backend connectivity
+            try {
+                const response = await fetch('http://localhost:5001/user/categories', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors'
+                });
+                
+                diagnostics.tests.backendConnectivity = {
+                    status: response.ok ? 'pass' : 'fail',
+                    statusCode: response.status,
+                    responseTime: Date.now(),
+                    details: response.ok ? 'Backend is accessible' : `HTTP ${response.status}`
+                };
+            } catch (error) {
+                diagnostics.tests.backendConnectivity = {
+                    status: 'fail',
+                    error: error.message,
+                    details: 'Backend server is not accessible'
+                };
+            }
+            
+            // Test 2: CORS support
+            try {
+                const response = await fetch('http://localhost:5001/user/categories', {
+                    method: 'OPTIONS',
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'cors'
+                });
+                
+                diagnostics.tests.corsSupport = {
+                    status: response.ok ? 'pass' : 'fail',
+                    statusCode: response.status,
+                    details: response.ok ? 'CORS is properly configured' : 'CORS issues detected'
+                };
+            } catch (error) {
+                diagnostics.tests.corsSupport = {
+                    status: 'fail',
+                    error: error.message,
+                    details: 'CORS test failed'
+                };
+            }
+            
+            // Test 3: Service types endpoint
+            try {
+                const response = await fetch('http://localhost:5001/user/categories');
+                const data = await response.json();
+                
+                diagnostics.tests.serviceTypesEndpoint = {
+                    status: (response.ok && data.success && data.categories) ? 'pass' : 'fail',
+                    statusCode: response.status,
+                    categoriesCount: data.categories ? data.categories.length : 0,
+                    details: data.success ? 'Service types loaded successfully' : 'Invalid response format'
+                };
+            } catch (error) {
+                diagnostics.tests.serviceTypesEndpoint = {
+                    status: 'fail',
+                    error: error.message,
+                    details: 'Service types endpoint failed'
+                };
+            }
+            
+            // Test 4: File upload capability
+            try {
+                const testFile = new File(['test content'], 'test.txt', { type: 'text/plain' });
+                const formData = new FormData();
+                formData.append('test', testFile);
+                
+                diagnostics.tests.fileUploadCapability = {
+                    status: 'pass',
+                    details: 'File upload capability is available',
+                    supportedTypes: ['text/plain', 'application/pdf', 'image/png', 'image/jpeg']
+                };
+            } catch (error) {
+                diagnostics.tests.fileUploadCapability = {
+                    status: 'fail',
+                    error: error.message,
+                    details: 'File upload capability test failed'
+                };
+            }
+            
+            // Display diagnostics results
+            const report = generateErrorReport();
+            const diagnosticsHTML = `
+                <div style="background: #f3f4f6; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                    <h4>🔧 Diagnostic Results</h4>
+                    <div style="font-family: monospace; font-size: 12px;">
+                        ${Object.entries(diagnostics.tests).map(([test, result]) => `
+                            <div style="margin: 5px 0; padding: 5px; border-radius: 4px; background: ${result.status === 'pass' ? '#d1fae5' : '#fee2e2'};">
+                                <strong>${test}:</strong> ${result.status === 'pass' ? '✅' : '❌'} ${result.details}
+                                ${result.statusCode ? ` (${result.statusCode})` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('errorReportSection').insertAdjacentHTML('beforeend', diagnosticsHTML);
+            
+            // Add to error report
+            errorReport.diagnostics = diagnostics;
+        }
+
+        function downloadErrorReport() {
+            const report = generateErrorReport();
+            const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `blinkcare-error-report-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Global error handler
+        window.addEventListener('error', function(event) {
+            logError('global', event.error?.message || event.message, {
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno,
+                stack: event.error?.stack
+            });
+            displayErrorReport();
+        });
+
+        window.addEventListener('unhandledrejection', function(event) {
+            logError('global', 'Unhandled Promise Rejection', {
+                reason: event.reason?.toString(),
+                stack: event.reason?.stack
+            });
+            displayErrorReport();
+            
+            // Prevent the default behavior (console error)
+            event.preventDefault();
+        });
+
+        // Additional error handling for fetch operations
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            return originalFetch.apply(this, args)
+                .then(response => {
+                    if (!response.ok) {
+                        logNetworkIssue(args[0], `HTTP ${response.status}: ${response.statusText}`, {
+                            status: response.status,
+                            statusText: response.statusText
+                        });
+                    }
+                    return response;
+                })
+                .catch(error => {
+                    logNetworkIssue(args[0], error.message, error);
+                    throw error;
+                });
+        };
+
+        // Initialize the test
+        document.addEventListener('DOMContentLoaded', function() {
+            loadServiceTypes();
+            setupFileUpload();
+        });
+
+        // Load service categories
+        async function loadServiceTypes() {
+            try {
+                const response = await fetch('http://localhost:5001/user/categories', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    mode: 'cors'
+                });
+                
+                if (!response.ok) {
+                    const errorMsg = `HTTP error! status: ${response.status}`;
+                    logNetworkIssue('http://localhost:5001/user/categories', errorMsg, {
+                        status: response.status,
+                        statusText: response.statusText
+                    });
+                    throw new Error(errorMsg);
+                }
+                
+                const data = await response.json();
+                
+                // Handle both response formats (with and without success field)
+                if ((data.success && data.categories) || data.categories) {
+                    serviceTypes = data.categories;
+                    renderServiceTypes();
+                    logInfo('Service types loaded successfully', { count: data.categories.length });
+                } else {
+                    const errorMsg = 'Invalid response format from categories API';
+                    logError('initialization', errorMsg, { response: data });
+                    throw new Error(errorMsg);
+                }
+            } catch (error) {
+                logError('initialization', 'Failed to load service types', {
+                    error: error.message,
+                    stack: error.stack
+                });
+                
+                // Use fallback data
+                serviceTypes = [
+                    { name: 'Plumbing' },
+                    { name: 'Electrical' },
+                    { name: 'AC Repair' },
+                    { name: 'Carpentry' },
+                    { name: 'Painting' },
+                    { name: 'Cleaning' },
+                    { name: 'Pest Control' },
+                    { name: 'Appliance Repair' },
+                    { name: 'Home Appliances' },
+                    { name: 'Beauty & Spa' }
+                ];
+                renderServiceTypes();
+                logWarning('initialization', 'Using fallback service types', { count: serviceTypes.length });
+            }
+        }
+
+        // Render service types as checkboxes
+        function renderServiceTypes() {
+            const container = document.getElementById('serviceTypesContainer');
+            container.innerHTML = '';
+            
+            serviceTypes.forEach((service, index) => {
+                const div = document.createElement('div');
+                div.className = 'checkbox-item';
+                
+                div.innerHTML = `
+                    <input type="checkbox" id="service_${index}" name="service_type" value="${service.name}" ${index < 3 ? 'checked' : ''}>
+                    <label for="service_${index}">${service.name}</label>
+                `;
+                
+                container.appendChild(div);
+            });
+        }
+
+        // Setup file upload drag and drop
+        function setupFileUpload() {
+            const fileUpload = document.querySelector('.file-upload');
+            
+            fileUpload.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                this.classList.add('dragover');
+            });
+            
+            fileUpload.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+            });
+            
+            fileUpload.addEventListener('drop', function(e) {
+                e.preventDefault();
+                this.classList.remove('dragover');
+                
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    document.getElementById('document').files = files;
+                    handleFileUpload(document.getElementById('document'));
+                }
+            });
+        }
+
+        // Handle file upload
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            const textElement = document.getElementById('fileUploadText');
+            
+            if (file) {
+                textElement.innerHTML = `
+                    <div style="font-size: 2rem; margin-bottom: 10px;">✅</div>
+                    <p><strong>File Selected: ${file.name}</strong></p>
+                    <p style="color: #6b7280; margin-top: 5px;">Size: ${(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                `;
+            }
+        }
+
+        // Step 1: Send OTP
+        async function sendOTP() {
+            const email = document.getElementById('email').value.trim();
+            const loader = document.getElementById('sendOTPLoader');
+            const response = document.getElementById('otpResponse');
+            
+            if (!email) {
+                logValidationError('email', 'Email address is required');
+                showResponse('otpResponse', 'Please enter an email address', 'error');
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                logValidationError('email', 'Invalid email format', email);
+                showResponse('otpResponse', 'Please enter a valid email address', 'error');
+                return;
+            }
+            
+            loader.innerHTML = '<div class="loading"></div>';
+            updateStepStatus('step1', 'in_progress');
+            
+            try {
+                const res = await fetch('http://localhost:5001/provider/send-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email })
+                });
+                
+                if (!res.ok) {
+                    const errorMsg = `HTTP error! status: ${res.status}`;
+                    logNetworkIssue('http://localhost:5001/provider/send-otp', errorMsg, {
+                        status: res.status,
+                        statusText: res.statusText,
+                        email: email
+                    });
+                    throw new Error(errorMsg);
+                }
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    providerEmail = email;
+                    updateStepStatus('step1', 'completed');
+                    showResponse('otpResponse', `✅ OTP sent successfully to ${email}! Check your inbox (and spam folder). Test OTP: ${data.otp || '123456'}`, 'success');
+                    activateStep(2);
+                    updateProgress(33);
+                    logInfo('OTP sent successfully', { email: email, otp: data.otp });
+                } else {
+                    const errorMsg = data.message || 'Unknown error';
+                    logError('step1', 'OTP send failed', { email: email, response: data });
+                    updateStepStatus('step1', 'failed', errorMsg);
+                    showResponse('otpResponse', `❌ ${errorMsg}`, 'error');
+                }
+            } catch (error) {
+                const errorMsg = `Failed to send OTP: ${error.message}`;
+                logError('step1', errorMsg, { 
+                    email: email, 
+                    error: error.message,
+                    stack: error.stack 
+                });
+                updateStepStatus('step1', 'failed', errorMsg);
+                showResponse('otpResponse', '❌ Failed to send OTP. Please check if the backend server is running.', 'error');
+                displayErrorReport();
+            } finally {
+                loader.innerHTML = '';
+            }
+        }
+
+        // Step 2: Verify OTP
+        async function verifyOTP() {
+            const otp = document.getElementById('otp').value.trim();
+            const loader = document.getElementById('verifyOTPLoader');
+            
+            if (!otp) {
+                showResponse('verifyResponse', 'Please enter the OTP', 'error');
+                return;
+            }
+            
+            if (!providerEmail) {
+                showResponse('verifyResponse', 'Please send OTP first', 'error');
+                return;
+            }
+            
+            loader.innerHTML = '<div class="loading"></div>';
+            
+            try {
+                const res = await fetch('http://localhost:5001/provider/verify-otp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        email: providerEmail, 
+                        otp: otp 
+                    })
+                });
+                
+                const data = await res.json();
+                
+                if (data.success) {
+                    if (data.is_existing) {
+                        showResponse('verifyResponse', '✅ Login successful! You are already registered.', 'success');
+                        document.getElementById('step4').style.display = 'block';
+                        updateProgress(100);
+                    } else {
+                        showResponse('verifyResponse', '✅ OTP verified successfully! Please complete your registration.', 'success');
+                        document.getElementById('email').value = data.email;
+                        activateStep(3);
+                        updateProgress(66);
+                    }
+                } else {
+                    showResponse('verifyResponse', `❌ ${data.message}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error verifying OTP:', error);
+                showResponse('verifyResponse', '❌ Failed to verify OTP. Please try again.', 'error');
+            } finally {
+                loader.innerHTML = '';
+            }
+        }
+
+        // Step 3: Complete Registration
+        async function completeRegistration() {
+            const loader = document.getElementById('registerLoader');
+            const form = document.getElementById('registrationForm');
+            const formData = new FormData();
+            
+            try {
+                // Get form data
+                const name = document.getElementById('name').value.trim();
+                const business_name = document.getElementById('business_name').value.trim();
+                const phone_number = document.getElementById('phone_number').value.trim();
+                const pincode = document.getElementById('pincode').value.trim();
+                const address = document.getElementById('address').value.trim();
+                const referral = document.getElementById('referral').value.trim();
+                const documentFile = document.getElementById('document').files[0];
+                
+                logInfo('Starting registration process', { 
+                    name, business_name, phone_number, pincode, 
+                    hasDocument: !!documentFile, referral 
+                });
+            
+                // Get selected service types
+                const selectedServices = [];
+                const serviceCheckboxes = document.querySelectorAll('input[name="service_type"]:checked');
+                serviceCheckboxes.forEach(checkbox => {
+                    selectedServices.push(checkbox.value);
+                });
+                
+                logInfo('Selected services', { selectedServices });
+                
+                // Validation
+                if (!name || !business_name || !phone_number || !pincode || !address) {
+                    const errorMsg = 'Please fill in all required fields';
+                    logValidationError('form', errorMsg);
+                    showResponse('registerResponse', `❌ ${errorMsg}`, 'error');
+                    return;
+                }
+                
+                if (selectedServices.length === 0) {
+                    const errorMsg = 'Please select at least one service category';
+                    logValidationError('service_type', errorMsg);
+                    showResponse('registerResponse', `❌ ${errorMsg}`, 'error');
+                    return;
+                }
+                
+                if (!documentFile) {
+                    const errorMsg = 'Please upload a document';
+                    logValidationError('document', errorMsg);
+                    showResponse('registerResponse', `❌ ${errorMsg}`, 'error');
+                    return;
+                }
+                
+                if (pincode.length !== 6 || !/^\d{6}$/.test(pincode)) {
+                    const errorMsg = 'Please enter a valid 6-digit pincode';
+                    logValidationError('pincode', errorMsg, pincode);
+                    showResponse('registerResponse', `❌ ${errorMsg}`, 'error');
+                    return;
+                }
+                
+                if (phone_number.length !== 10 || !/^\d{10}$/.test(phone_number)) {
+                    const errorMsg = 'Please enter a valid 10-digit phone number';
+                    logValidationError('phone_number', errorMsg, phone_number);
+                    showResponse('registerResponse', `❌ ${errorMsg}`, 'error');
+                    return;
+                }
+                
+                loader.innerHTML = '<div class="loading"></div>';
+                updateStepStatus('step3', 'in_progress');
+                
+                // Prepare form data
+                formData.append('name', name);
+                formData.append('email', providerEmail);
+                formData.append('business_name', business_name);
+                formData.append('phone_number', phone_number);
+                formData.append('pincode', pincode);
+                formData.append('address', address);
+                formData.append('document', documentFile);
+                
+                if (referral) {
+                    formData.append('referral', referral);
+                }
+                
+                // Append service types
+                selectedServices.forEach(service => {
+                    formData.append('service_type[]', service);
+                });
+                
+                logInfo('Sending registration request', { 
+                    email: providerEmail, 
+                    serviceCount: selectedServices.length,
+                    hasDocument: !!documentFile 
+                });
+                
+                const res = await fetch('http://localhost:5001/provider/register', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!res.ok) {
+                    const errorMsg = `HTTP error! status: ${res.status}`;
+                    logNetworkIssue('http://localhost:5001/provider/register', errorMsg, {
+                        status: res.status,
+                        statusText: res.statusText
+                    });
+                    throw new Error(errorMsg);
+                }
+                
+                let data;
+                try {
+                    const responseText = await res.text();
+                    logInfo('Raw response received', { responseText: responseText.substring(0, 200) });
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    logError('step3', 'Failed to parse response', { 
+                        parseError: parseError.message,
+                        responseText: responseText || 'No response text available'
+                    });
+                    throw new Error('Invalid response format from server');
+                }
+                
+                logInfo('Registration response received', { success: data.success, message: data.message });
+                
+                if (data.success) {
+                    updateStepStatus('step3', 'completed');
+                    showResponse('registerResponse', '🎉 Registration completed successfully! Please wait for admin approval.', 'success');
+                    document.getElementById('step4').style.display = 'block';
+                    updateProgress(100);
+                    
+                    // Auto-scroll to results
+                    setTimeout(() => {
+                        document.getElementById('step4').scrollIntoView({ behavior: 'smooth' });
+                    }, 1000);
+                } else {
+                    const errorMsg = data.message || 'Registration failed';
+                    logError('step3', 'Registration failed', { response: data });
+                    updateStepStatus('step3', 'failed', errorMsg);
+                    showResponse('registerResponse', `❌ ${errorMsg}`, 'error');
+                }
+            } catch (error) {
+                const errorMsg = `Failed to complete registration: ${error.message}`;
+                logError('step3', errorMsg, { 
+                    error: error.message,
+                    stack: error.stack 
+                });
+                updateStepStatus('step3', 'failed', errorMsg);
+                showResponse('registerResponse', `❌ ${errorMsg}`, 'error');
+                displayErrorReport();
+            } finally {
+                loader.innerHTML = '';
+            }
+        }
+
+        // Utility functions
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function showResponse(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.className = `response ${type}`;
+            element.style.display = 'block';
+        }
+
+        function activateStep(stepNumber) {
+            // Remove active class from all steps
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            
+            // Add active class to current step
+            document.getElementById(`step${stepNumber}`).classList.add('active');
+            currentStep = stepNumber;
+        }
+
+        function updateProgress(percentage) {
+            document.getElementById('progressFill').style.width = `${percentage}%`;
+        }
+
+        function resetTest() {
+            // Reset all form fields
+            document.getElementById('email').value = '';
+            document.getElementById('otp').value = '';
+            document.getElementById('registrationForm').reset();
+            
+            // Reset state
+            currentStep = 1;
+            providerEmail = '';
+            
+            // Reset error report
+            errorReport.errors = [];
+            errorReport.warnings = [];
+            errorReport.networkIssues = [];
+            errorReport.validationErrors = [];
+            errorReport.steps = {
+                step1: { status: 'pending', errors: [], timestamp: null },
+                step2: { status: 'pending', errors: [], timestamp: null },
+                step3: { status: 'pending', errors: [], timestamp: null }
+            };
+            
+            // Reset UI
+            document.querySelectorAll('.response').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            document.getElementById('step4').style.display = 'none';
+            document.getElementById('errorReportSection').style.display = 'none';
+            
+            // Remove any floating error reports
+            const existingReport = document.getElementById('errorReport');
+            if (existingReport) {
+                existingReport.remove();
+            }
+            
+            activateStep(1);
+            updateProgress(0);
+            
+            // Reset file upload
+            document.getElementById('fileUploadText').innerHTML = `
+                <div style="font-size: 2rem; margin-bottom: 10px;">📄</div>
+                <p><strong>Click to upload or drag and drop</strong></p>
+                <p style="color: #6b7280; margin-top: 5px;">PDF, DOC, DOCX, PNG, JPG (Max 5MB)</p>
+            `;
+            
+            // Reload service types and pre-select some
+            renderServiceTypes();
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            logInfo('Test reset completed');
+        }
+    </script>
+</body>
+</html>
